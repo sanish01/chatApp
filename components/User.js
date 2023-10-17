@@ -8,7 +8,7 @@ const User = ({ item }) => {
 
   const sendFriendRequestHandler = async (currentUserId, selectedUserId) => {
     try {
-      const response = await fetch("http://192.168.0.105:8000/friend-request", {
+      const response = await fetch("http://192.168.1.90:8000/friend-request", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

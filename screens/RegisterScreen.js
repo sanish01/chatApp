@@ -40,7 +40,7 @@ export default function RegisterScreen() {
       return Alert.alert("Invalid Input", "The values should not be blank");
     }
 
-    const apiBaseUrl = "http://192.168.0.105:8000"; // this is the local ip address to test from the mobile since local host is not working while testing from expogo
+    const apiBaseUrl = "http://192.168.1.90:8000"; // this is the local ip address to test from the mobile since local host is not working while testing from expogo
     // send a post request to the backend API to register a user
     axios
       // .post("http://localhost:8000/register", user)

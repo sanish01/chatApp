@@ -51,7 +51,7 @@ const HomeScreen = () => {
       const userId = decodedToken.userId;
       setUserId(userId);
 
-      const apiBaseUrl = "http://192.168.0.105:8000";
+      const apiBaseUrl = "http://192.168.1.90:8000";
       axios
         .get(`${apiBaseUrl}/users/${userId}`)
         .then((response) => {
