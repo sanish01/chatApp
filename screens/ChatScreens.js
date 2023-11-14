@@ -31,9 +31,11 @@ const ChatScreens = () => {
     console.log(acceptedFriends);
   return (
     <View>
-      {acceptedFriends.map((friend, key) => (
+      {acceptedFriends.length === 0 ? (<Text style={{fontSize: 18, textAlign: 'left', fontWeight: '600', marginLeft: 15, marginTop: 15, padding: 10}}>No chats</Text>) :
+      (acceptedFriends.map((friend, key) => (
         <UserChat key={key} item={friend} />
-      ))}
+        )))
+      }
     </View>
   );
 };

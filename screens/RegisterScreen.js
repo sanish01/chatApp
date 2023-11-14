@@ -103,7 +103,7 @@ export default function RegisterScreen() {
             />
           </View>
           <View style={styles.inputHolder}>
-            <Text style={styles.textlabels}>Image</Text>
+            <Text style={styles.textlabels}>Image Link</Text>
             <TextInput
               style={styles.input}
               placeholder="Image"

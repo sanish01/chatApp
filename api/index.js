@@ -3,6 +3,7 @@ const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
 const passport = require("passport");
 const localStrategy = require("passport-local").Strategy;
+const path = require("path");
 
 const app = express();
 const port = process.env.PORT || 8000;
@@ -36,17 +37,23 @@ app.listen(port, () => {
   console.log(`Server running on port ${port}`);
 });
 
+//testing
+// Define a route to serve static files from the "files/" directory
+app.use("/files", express.static(path.join(__dirname, "files")));
+
 const User = require("./models/user");
 const Message = require("./models/message");
 const multer = require("multer");
 
+const defaultUserImage =
+  "https://img.freepik.com/free-psd/3d-illustration-person-with-sunglasses_23-2149436188.jpg?w=740&t=st=1695743723~exp=1695744323~hmac=4d6be87de3922dfabc655661c703e64977a02e24c03ae41905cd99a8d9114c0f";
 //endpoint for registering a User
 
 app.post("/register", (req, res) => {
   const { name, email, password, image } = req.body;
 
   //creating new user object
-  const newUser = new User({ name, email, password, image });
+  const newUser = new User({ name, email, password, image : image || defaultUserImage });
 
   //save the user to the database
 
@@ -218,6 +225,9 @@ app.get("/accepted-friends/:userId", async (req, res) => {
 //configure multer for handeling file uploads
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
+    cb(null, "files/"); //specify the desited destination folder
+  },
+  filename: function (req, file, cb) {
     //generate a unique filename for the uploaded file
     const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
     cb(null, uniqueSuffix + "-" + file.originalname);
@@ -228,7 +238,7 @@ const upload = multer({ storage: storage });
 
 // endpoint to post Messages and store it inthe backend
 
-app.post("/messages", upload.single("imagefile"), async (req, res) => {
+app.post("/messages", upload.single("imageFile"), async (req, res) => {
   try {
     const { senderId, recepientId, messageType, messageText } = req.body;
 
@@ -237,10 +247,12 @@ app.post("/messages", upload.single("imagefile"), async (req, res) => {
       recepientId,
       messageType,
       message: messageText,
-      imageUrl: messageType === "image",
+      // imageUrl: messageType === "image"? req.file.path : null,
+      imageUrl:
+        messageType === "image" ? req.file.path.replace(/\\/g, "/") : null,
       timeStamp: new Date(),
     });
-    
+
     await newMessage.save();
     res.status(200).json({ message: "Message sent successfully" });
   } catch (err) {
@@ -281,5 +293,57 @@ app.get("/messages/:senderId/:recepientId", async (req, res) => {
   } catch (err) {
     console.log(err);
     res.status(500).json({ error: "Internal server error" });
+  }
+});
+
+// endpoint to delete the messages
+
+app.post("/deleteMessages", async (req, res) => {
+  try {
+    const { messages } = req.body;
+
+    if (!Array.isArray(messages) || messages.length === 0) {
+      return res.status(400).json({ message: "Invalid request body!!" });
+    }
+
+    await Message.deleteMany({ _id: { $in: messages } });
+
+    res.json({ message: "Message delted successfully" });
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+
+app.get("/friend-requests/sent/:userId", async (req, res) => {
+  try {
+    const { userId } = req.params;
+    const user = await User.findById(userId)
+      .populate("sentFriendRequests", "name email image")
+      .lean();
+    const sentFriendRequests = user.sentFriendRequests;
+    res.json(sentFriendRequests);
+  } catch (err) {
+    console.log("error ", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
+
+app.get("/friends/:userId", (req, res) => {
+  try {
+    const { userId } = req.params;
+    User.findById(userId)
+      .populate("friends")
+      .then((user) => {
+        if (!user) {
+          return res.status(404).json({ message: "User not found" });
+        }
+
+        const friendsIds = user.friends.map((friend) => friend._id);
+        res.status(200).json(friendsIds);
+      });
+  } catch (err) {
+    console.log("error ", err);
+    res.status(500).json({ message: "Internal server error" });
   }
 });
