@@ -90,7 +90,7 @@ const User = ({ item }) => {
           }}
         >
           <Text style={{ textAlign: "center", color: "white" }}>Friends</Text>
-        </Pressable>
+        </Pressable>  
       ) : requestSent ||
         friendRequest.some((friend) => friend._id === item._id) ? (
         <Pressable

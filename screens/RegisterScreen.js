@@ -24,19 +24,19 @@ export default function RegisterScreen() {
       name: name,
       email: email,
       password: password,
-      image: image,
+      // image: image,
     };
 
     if (
       user.email.trim() === "" ||
-      user.image.trim() === "" ||
+      // user.image.trim() === "" ||
       user.name.trim() === "" ||
       user.password.trim() === ""
     ) {
       setName("");
       setEmail("");
       setPassword("");
-      setImage("");
+      // setImage("");
       return Alert.alert("Invalid Input", "The values should not be blank");
     }
 
@@ -54,7 +54,7 @@ export default function RegisterScreen() {
         setName("");
         setEmail("");
         setPassword("");
-        setImage("");
+        // setImage("");
         navigation.goBack();
       })
       .catch((err) => {

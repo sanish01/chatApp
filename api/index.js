@@ -6,7 +6,7 @@ const localStrategy = require("passport-local").Strategy;
 const path = require("path");
 
 const app = express();
-const port = process.env.PORT || 8000;
+const port = 8000;
 const cors = require("cors");
 app.use(cors());
 
@@ -15,7 +15,7 @@ app.use(bodyParser.json());
 app.use(passport.initialize());
 
 const jwt = require("jsonwebtoken");
-const secretKey = process.env.SECRET_KEY;
+// const secretKey = process.env.SECRET_KEY;
 
 // app.get("/", (req, res) => {
 //   res.send("Welcome to the server sanish!");
@@ -50,10 +50,16 @@ const defaultUserImage =
 //endpoint for registering a User
 
 app.post("/register", (req, res) => {
-  const { name, email, password, image } = req.body;
+  // const { name, email, password, image } = req.body;
+  const { name, email, password } = req.body;
 
   //creating new user object
-  const newUser = new User({ name, email, password, image : image || defaultUserImage });
+  const newUser = new User({
+    name,
+    email,
+    password,
+    image: defaultUserImage,
+  });
 
   //save the user to the database
 
@@ -77,7 +83,7 @@ const createToken = (userId) => {
   };
 
   //generate the token with a secret key and expiration time
-  const token = jwt.sign(payload, secretKey, { expiresIn: "1h" });
+  const token = jwt.sign(payload, "Q$r2K6W8n!jCW%Zk", { expiresIn: "1h" });
 
   return token;
 };

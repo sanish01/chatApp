@@ -41,7 +41,7 @@ export default function LoginScreen() {
       password: password,
     };
 
-    const apiBaseUrl = "http://192.168.1.90:8000";
+    const apiBaseUrl = "http://192.168.1.131:8000";
 
     axios.post(apiBaseUrl + "/login", user).then((response) => {
       console.log(response);
