@@ -24,7 +24,7 @@ const jwt = require("jsonwebtoken");
 // });
 
 mongoose
-  .connect("mongodb+srv://shan:sanish@cluster0.kgoqlsl.mongodb.net/", {
+  .connect("mongodb+srv://shan:<Password>@cluster0.kgoqlsl.mongodb.net/", {
     useNewUrlParser: true,
     useUnifiedtopology: true,
   })
@@ -85,7 +85,7 @@ const createToken = (userId) => {
   };
 
   //generate the token with a secret key and expiration time
-  const token = jwt.sign(payload, "Q$r2K6W8n!jCW%Zk", { expiresIn: "1h" });
+  const token = jwt.sign(payload, "<Secret_key>", { expiresIn: "1h" });
 
   return token;
 };
